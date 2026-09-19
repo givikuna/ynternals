@@ -24,7 +24,7 @@ in
     };
   };
 
-  config = mkIf cgf.enable {
+  config = mkIf cfg.enable {
     systemd.services.ynternals-decrypt = {
       description = "Decrypt ynternals secrets";
       wantedBy = [ "multi-user.target" ];
