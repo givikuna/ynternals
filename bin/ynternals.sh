@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [ "${1:-}" != "add" ]; then
+    echo "Usage: ynternals add"
+    exit 1
+fi
+
 KEYFILE="/etc/nixos/symmetric.key"
 
 if [ ! -f "$KEYFILE" ]; then
