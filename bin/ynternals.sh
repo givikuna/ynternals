@@ -9,7 +9,7 @@ if [ ! -f "$KEYFILE" ]; then
 fi
 
 echo -n "enter secret data: "
-read -s SECRET_DATA
+read -rs SECRET_DATA
 echo
 
 echo -n "$SECRET_DATA" | openssl enc -aes-256-cbc -pbkdf2 -salt -a -pass "file:$KEYFILE"
