@@ -25,7 +25,7 @@
 
       apps.${system}.default = {
         type = "app";
-        program = "${self.package.${system}.default}/bin/ynternals";
+        program = "${self.packages.${system}.default}/bin/ynternals";
       };
     };
 }
