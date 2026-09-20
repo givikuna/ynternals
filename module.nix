@@ -8,7 +8,7 @@ with lib;
 let
   cfg = config.ynternals;
 
-  secretData =
+  secret-data =
     if cfg.file != null && builtins.pathExists cfg.file then
       builtins.fromJSON (builtins.readFile cfg.file)
     else
@@ -34,7 +34,7 @@ in
       type = types.attrsOf types.str;
       readOnly = true;
       description = "Attribute set mapping secret names to their decrypted file paths";
-      default = mapAttrs (name: _: "/run/ynternals/${name}") secretData;
+      default = mapAttrs (name: _: "/run/ynternals/${name}") secret-data;
     };
   };
 
@@ -49,8 +49,14 @@ in
         RemainAfterExit = true;
       };
 
+      environment = {
+        SECRETS_HASH = builtins.hashString "sha256" (builtins.toJSON secret-data);
+      };
+
       path = with pkgs; [
         openssl
+        jq
+        coreutils
       ];
 
       script = ''
