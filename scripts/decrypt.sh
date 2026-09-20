@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ENC_FILE="$1"
+SECRETS_FILE="$1"
 KEY_FILE="$2"
 
-SEC_DIR="/run/ynternals"
-mkdir -p "$SEC_DIR"
-chmod 700 "$SEC_DIR"
+if [ ! -f "$SECRETS_FILE" ] || [ ! -f "$KEY_FILE" ]; then
+    echo "secrets or key file missing."
+    exit 0
+fi
 
-TMP_JSON=$(mktemp)
+mkdir -p /run/ynternals
+chmod 750 /run/ynternals
+chown root:wheel /run/ynternals
 
-openssl enc -d -aes-256-cbc -pbkdf2 \
-  -in "$ENC_FILE" \
-  -out "$TMP_JSON" \
-  -pass "file:$KEY_FILE"
+while IFS= read -r key && IFS= read -r encValue; do
+    [ -z "$key" ] && continue
 
-for key in $(jq -r 'keys[]' "$TMP_JSON"); do
-  jq -r --arg k "$key" '.[$k]' "$TMP_JSON" > "$SEC_DIR/$key"
-  chmod 400 "$SEC_DIR/$key"
-  chown root:root "$SEC_DIR/$key"
-done
+    echo "$encValue" | openssl enc -d -aes-256-cbc -pbkdf2 -salt -a -pass "file:$KEY_FILE" > "/run/ynternals/$key"
 
-shred -u "$TMP_JSON"
+    chmod 440 "/run/ynternals/$key"
+    chown root:wheel "/run/ynternals/$key"
+
+done < <(jq -r 'to_entries[] | .key, .value' "$SECRETS_FILE")

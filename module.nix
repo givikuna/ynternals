@@ -54,16 +54,7 @@ in
       ];
 
       script = ''
-        set -euo pipefail
-        mkdir -p /run/ynternals
-        chmod 700 /run/ynternals
-
-        ${concatStringsSep "\n" (
-          mapAttrsToList (name: encValue: ''
-            echo "${encValue}" | openssl enc -d -aes-256-cbc -pbkdf2 -salt -a -pass "file:${cfg.key-file}" > "/run/ynternals/${name}"
-            chmod 400 "/run/ynternals/${name}"
-          '') secretData
-        )}
+        ${pkgs.bash}/bin/bash ${./scripts/decrypt.sh} "${cfg.file}" "${cfg.key-file}"
       '';
     };
   };
