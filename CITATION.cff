@@ -3,7 +3,7 @@ message: If you use this software, please cite it using these metadata
 title: "Ynternals"
 abstract: Ynternals is a nix flake for managing secrets declaratively using symmetric encryption in NixOS.
 authors:
-    - family-names: Tsvariani, Givi
+    - family-names: Givi Tsvariani
 version: 0.0.0.1
 identifiers:
     - description: GitHub for the project
