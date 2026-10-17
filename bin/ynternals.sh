@@ -81,11 +81,36 @@ elif [ "$COMMAND" = "validate" ]; then
     echo "$SECRETS_FILE is valid."
     exit 0
 
+elif [ "$COMMAND" = "peek" ]; then
+    SECRET_NAME="${2:-}"
+
+    if [ -z "$SECRET_NAME" ]; then
+        echo "usage: ynternals peek <secret_name>"
+        exit 1
+    fi
+
+    if [ "$EUID" -ne 0 ]; then
+        echo "ERROR: peeking secrets requires root privileges (use sudo)"
+        exit 1
+    fi
+
+    SECRET_PATH="/run/ynternals/$SECRET_NAME"
+
+    if [ ! -f "$SECRET_PATH" ]; then
+        echo "ERROR: secret '$SECRET_NAME' not found in $SECRET_PATH"
+        exit 1
+    fi
+
+    cat "$SECRET_PATH"
+    echo
+    exit 0
+
 else
     echo "usage:"
     echo "  ynternals add"
     echo "  ynternals remove <secret_name> [secrets.json path]"
     echo "  ynternals validate [secrets.json path]"
+    echo "  ynternals peek <secret_name>"
     echo "  ynternals -v, --version"
     exit 1
 fi
