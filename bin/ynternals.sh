@@ -81,6 +81,27 @@ elif [ "$COMMAND" = "validate" ]; then
     echo "$SECRETS_FILE is valid."
     exit 0
 
+elif [ "$COMMAND" = "list" ]; then
+    SECRETS_FILE="${2:-secrets.json}"
+
+    if [ ! -f "$SECRETS_FILE" ]; then
+        echo "ERROR: file not found at $SECRETS_FILE"
+        exit 1
+    fi
+
+    if ! jq . >/dev/null 2>&1 < "$SECRETS_FILE"; then
+        echo "ERROR: $SECRETS_FILE is not valid JSON"
+        exit 1
+    fi
+
+    if ! jq -e 'type == "object"' >/dev/null 2>&1 < "$SECRETS_FILE"; then
+        echo "ERROR: $SECRETS_FILE must be a JSON object"
+        exit 1
+    fi
+
+    jq -r 'keys[]' "$SECRETS_FILE"
+    exit 0
+
 elif [ "$COMMAND" = "peek" ]; then
     SECRET_NAME="${2:-}"
 
@@ -110,6 +131,7 @@ else
     echo "  ynternals add"
     echo "  ynternals remove <secret_name> [secrets.json path]"
     echo "  ynternals validate [secrets.json path]"
+    echo "  ynternals list [secrets.json path]"
     echo "  ynternals peek <secret_name>"
     echo "  ynternals -v, --version"
     exit 1
