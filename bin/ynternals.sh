@@ -3,7 +3,11 @@ set -euo pipefail
 
 COMMAND="${1:-}"
 
-if [ "$COMMAND" = "add" ]; then
+if [ "$COMMAND" = "-v" ] || [ "$COMMAND" = "--version" ]; then
+    echo "ynternals version @VERSION@"
+    exit 0
+
+elif [ "$COMMAND" = "add" ]; then
     KEYFILE="/etc/nixos/symmetric.key"
 
     if [ ! -f "$KEYFILE" ]; then
@@ -42,8 +46,9 @@ elif [ "$COMMAND" = "remove" ]; then
     exit 0
 
 else
-    echo "Usage:"
+    echo "usage:"
     echo "  ynternals add"
     echo "  ynternals remove <secret_name> [secrets.json path]"
+    echo "  ynternals -v, --version"
     exit 1
 fi

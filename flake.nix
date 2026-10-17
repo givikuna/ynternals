@@ -10,6 +10,7 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      version = builtins.replaceStrings [ "\n" "\r" ] [ "" "" ] (builtins.readFile ./.version);
     in
     {
       nixosModules.default = import ./nix/module.nix;
@@ -21,7 +22,7 @@
           coreutils
           jq
         ];
-        text = builtins.readFile ./bin/ynternals.sh;
+        text = builtins.replaceStrings [ "@VERSION@" ] [ version ] (builtins.readFile ./bin/ynternals.sh);
       };
 
       apps.${system}.default = {
