@@ -12,13 +12,14 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      nixosModules.default = import ./module.nix;
+      nixosModules.default = import ./nix/module.nix;
 
       packages.${system}.default = pkgs.writeShellApplication {
         name = "ynternals";
         runtimeInputs = with pkgs; [
           openssl
           coreutils
+          jq
         ];
         text = builtins.readFile ./bin/ynternals.sh;
       };

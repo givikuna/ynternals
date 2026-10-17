@@ -47,6 +47,10 @@ in
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
+        RuntimeDirectory = "ynternals";
+        RuntimeDirectoryMode = "0750";
+        Group = "wheel";
+        UMask = "0226";
       };
 
       environment = {
@@ -60,7 +64,7 @@ in
       ];
 
       script = ''
-        ${pkgs.bash}/bin/bash ${./scripts/decrypt.sh} "${cfg.file}" "${cfg.key-file}"
+        ${pkgs.bash}/bin/bash ${../scripts/decrypt.sh} "${cfg.file}" "${cfg.key-file}"
       '';
     };
   };
