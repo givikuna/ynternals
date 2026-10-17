@@ -10,6 +10,21 @@ if [ ! -f "$SECRETS_FILE" ] || [ ! -f "$KEY_FILE" ]; then
     exit 0
 fi
 
+if ! jq . >/dev/null 2>&1 < "$SECRETS_FILE"; then
+    echo "ERROR: $SECRETS_FILE is not valid JSON" >&2
+    exit 1
+fi
+
+if ! jq -e 'type == "object"' >/dev/null 2>&1 < "$SECRETS_FILE"; then
+    echo "ERROR: $SECRETS_FILE must be a JSON object" >&2
+    exit 1
+fi
+
+if ! jq -e '[.[] | select(type != "string")] | length == 0' >/dev/null 2>&1 < "$SECRETS_FILE"; then
+    echo "ERROR: all values in $SECRETS_FILE must be strings" >&2
+    exit 1
+fi
+
 while IFS= read -r key && IFS= read -r encValue; do
     [ -z "$key" ] && continue
 
