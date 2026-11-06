@@ -10,10 +10,13 @@
     "gotools",
     "hackability",
     "ldflags",
+    "Lflag",
     "oneshot",
     "pipefail",
     "pkgs",
     "pname",
+    "tcgets",
+    "tcsets",
     "yndrium",
     "ynternals",
     "ysyldur"
