@@ -8,6 +8,19 @@ if [ "$COMMAND" = "-v" ] || [ "$COMMAND" = "--version" ]; then
     exit 0
 
 elif [ "$COMMAND" = "add" ]; then
+    SECRET_NAME="${2:-}"
+    SECRETS_FILE="${3:-secrets.json}"
+
+    if [ -z "$SECRET_NAME" ]; then
+        echo "usage: ynternals add <secret_name> [secrets.json path]"
+        exit 1
+    fi
+
+    if [[ ! "$SECRET_NAME" =~ ^[A-Za-z0-9._-]+$ ]] || [[ "$SECRET_NAME" == *".."* ]]; then
+        echo "ERROR: invalid secret name: $SECRET_NAME" >&2
+        exit 1
+    fi
+
     KEYFILE="${YNTERNALS_KEYFILE:-/etc/nixos/symmetric.key}"
 
     if [ ! -f "$KEYFILE" ]; then
@@ -15,12 +28,32 @@ elif [ "$COMMAND" = "add" ]; then
         exit 1
     fi
 
+    if [ ! -f "$SECRETS_FILE" ]; then
+        echo "{}" > "$SECRETS_FILE"
+    fi
+
+    if ! jq . >/dev/null 2>&1 < "$SECRETS_FILE"; then
+        echo "ERROR: $SECRETS_FILE is not valid JSON. Aborting."
+        exit 1
+    fi
+
+    if ! jq -e 'type == "object"' >/dev/null 2>&1 < "$SECRETS_FILE"; then
+        echo "ERROR: $SECRETS_FILE must be a JSON object. Aborting."
+        exit 1
+    fi
+
     echo -n "enter secret data: "
     IFS= read -rs SECRET_DATA
     echo
 
-    printf '%s' "$SECRET_DATA" | openssl enc -aes-256-cbc -pbkdf2 -salt -a -pass "file:$KEYFILE" | tr -d '\n'
-    echo
+    ENCRYPTED=$(printf '%s' "$SECRET_DATA" | openssl enc -aes-256-cbc -pbkdf2 -salt -a -pass "file:$KEYFILE" | tr -d '\n')
+
+    TMP_FILE=$(mktemp)
+    jq --arg key "$SECRET_NAME" --arg val "$ENCRYPTED" '.[$key] = $val' "$SECRETS_FILE" > "$TMP_FILE"
+    cat "$TMP_FILE" > "$SECRETS_FILE"
+    rm -f "$TMP_FILE"
+
+    echo "added '$SECRET_NAME' to $SECRETS_FILE"
     exit 0
 
 elif [ "$COMMAND" = "remove" ]; then
