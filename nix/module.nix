@@ -57,9 +57,9 @@ in
         UMask = "0226";
       };
 
-      environment = {
-        SECRETS_HASH = builtins.hashString "sha256" (builtins.toJSON secret-data);
-      };
+      restartTriggers = [
+        (builtins.hashString "sha256" (builtins.toJSON secret-data))
+      ];
 
       path = with pkgs; [
         openssl
