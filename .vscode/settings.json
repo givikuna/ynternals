@@ -1,14 +1,46 @@
 {
   "cSpell.words": [
     "attrset",
+    "Ciphertext",
     "direnv",
+    "EUID",
     "givikuna",
+    "golangci",
+    "gopls",
+    "gotools",
     "hackability",
+    "ldflags",
+    "Lflag",
     "oneshot",
     "pipefail",
     "pkgs",
+    "pname",
+    "tcgets",
+    "tcsets",
+    "Unpad",
     "yndrium",
     "ynternals",
     "ysyldur"
-  ]
+  ],
+
+  "go.useLanguageServer": true,
+  "go.toolsManagement.autoUpdate": false,
+  "go.alternateTools": {
+    "gopls": "gopls",
+    "dlv": "dlv",
+    "golangci-lint": "golangci-lint",
+    "goimports": "goimports"
+  },
+
+  "gopls": {
+    "ui.completion.usePlaceholders": true,
+    "ui.semanticTokens": true
+  },
+
+  "[go]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  }
 }

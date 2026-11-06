@@ -7,6 +7,7 @@
 with lib;
 let
   cfg = config.ynternals;
+  ynternalsPkg = pkgs.callPackage ./package.nix { };
 
   secret-data =
     if cfg.file != null && builtins.pathExists cfg.file then
@@ -55,21 +56,12 @@ in
         RuntimeDirectoryMode = "0750";
         Group = "wheel";
         UMask = "0226";
+        ExecStart = "${ynternalsPkg}/bin/ynternals-decrypt \"${toString cfg.file}\" \"${cfg.key-file}\"";
       };
 
       restartTriggers = [
         (builtins.hashString "sha256" (builtins.toJSON secret-data))
       ];
-
-      path = with pkgs; [
-        openssl
-        jq
-        coreutils
-      ];
-
-      script = ''
-        ${pkgs.bash}/bin/bash ${../scripts/decrypt.sh} "${cfg.file}" "${cfg.key-file}"
-      '';
     };
   };
 }
