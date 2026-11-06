@@ -8,7 +8,7 @@ if [ "$COMMAND" = "-v" ] || [ "$COMMAND" = "--version" ]; then
     exit 0
 
 elif [ "$COMMAND" = "add" ]; then
-    KEYFILE="/etc/nixos/symmetric.key"
+    KEYFILE="${YNTERNALS_KEYFILE:-/etc/nixos/symmetric.key}"
 
     if [ ! -f "$KEYFILE" ]; then
         echo "ERROR: key not found at $KEYFILE"

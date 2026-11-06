@@ -39,6 +39,10 @@ in
   };
 
   config = mkIf cfg.enable {
+    environment.variables = {
+      YNTERNALS_KEYFILE = cfg.key-file;
+    };
+
     systemd.services.ynternals-decrypt = {
       description = "Decrypt ynternals secrets";
       wantedBy = [ "multi-user.target" ];
