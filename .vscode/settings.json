@@ -1,7 +1,9 @@
 {
   "cSpell.words": [
     "attrset",
+    "Ciphertext",
     "direnv",
+    "EUID",
     "givikuna",
     "golangci",
     "gopls",
