@@ -3,11 +3,11 @@ message: If you use this software, please cite it using these metadata
 title: "Ynternals"
 abstract: Ynternals is a nix flake for managing secrets declaratively using symmetric encryption in NixOS.
 authors:
-    - family-names: Tsvariani
-version: 0.0.0.1
+  - family-names: Tsvariani
+version: 0.3.0
 identifiers:
-    - description: GitHub for the project
-      type: url
-      value: https://github.com/givikuna/ynternals
+  - description: GitHub for the project
+    type: url
+    value: https://github.com/givikuna/ynternals
 license: GPLv3.0
 repository-code: https://github.com/givikuna/ynternals
