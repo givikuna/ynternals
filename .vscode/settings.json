@@ -2,6 +2,7 @@
   "cSpell.words": [
     "attrset",
     "Ciphertext",
+    "Ciphertexts",
     "direnv",
     "EUID",
     "givikuna",
@@ -9,6 +10,7 @@
     "gopls",
     "gotools",
     "hackability",
+    "HMAC",
     "ldflags",
     "Lflag",
     "oneshot",
@@ -17,6 +19,7 @@
     "pname",
     "tcgets",
     "tcsets",
+    "tmpfs",
     "Tsvariani",
     "Unpad",
     "yndrium",
